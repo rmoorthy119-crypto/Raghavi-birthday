@@ -18,7 +18,35 @@
 html,body{height:100%}
 body{margin:0;background:var(--blush);color:var(--ink);font-family:var(--body);overflow:hidden;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
-#bg{position:fixed;inset:0;background:radial-gradient(120% 90% at 50% 0%,#fbeef2 0%,var(--blush) 45%,var(--mauve) 100%);z-index:0}
+#bg{position:fixed;inset:0;background:linear-gradient(135deg,#fdeff3,#f6d6e4,#e9d4f2,#fadcd6,#fdeff3);background-size:400% 400%;animation:drift 22s ease-in-out infinite;z-index:0}
+@keyframes drift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.orb{position:fixed;border-radius:50%;filter:blur(40px);z-index:0;pointer-events:none;animation:floaty 14s ease-in-out infinite}
+.orb.a{width:46vmax;height:46vmax;left:-14vmax;top:-12vmax;background:radial-gradient(circle,#ffc2d6aa,transparent 65%)}
+.orb.b{width:40vmax;height:40vmax;right:-12vmax;bottom:-10vmax;background:radial-gradient(circle,#d9b8f5aa,transparent 65%);animation-delay:-5s}
+.orb.c{width:30vmax;height:30vmax;left:30vw;top:40vh;background:radial-gradient(circle,#ffe3b8aa,transparent 65%);animation-delay:-9s}
+@keyframes floaty{50%{transform:translate(4vmax,3vmax) scale(1.1)}}
+#sp{position:fixed;inset:0;z-index:1;pointer-events:none}
+.pt{position:absolute;top:-30px;width:14px;height:18px;border-radius:0 100% 0 100%;background:linear-gradient(135deg,#e8506a,#a8173b);opacity:.55;animation:fall linear forwards}
+@keyframes fall{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(30px,55vh) rotate(260deg)}100%{transform:translate(-20px,112vh) rotate(560deg)}}
+.scene.on>*{animation:up .9s cubic-bezier(.2,.8,.2,1) backwards}
+.scene.on>*:nth-child(2){animation-delay:.12s}.scene.on>*:nth-child(3){animation-delay:.24s}.scene.on>*:nth-child(4){animation-delay:.36s}.scene.on>*:nth-child(5){animation-delay:.48s}
+@keyframes up{from{opacity:0;transform:translateY(26px) scale(.97)}}
+h1{background:linear-gradient(90deg,#6e1a36,#c2375a,#c9a24b,#c2375a,#6e1a36);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s linear infinite}
+@keyframes shine{to{background-position:220% 0}}
+.scene.on>h1{animation:up .9s cubic-bezier(.2,.8,.2,1) backwards,shine 7s linear infinite}
+.polaroid{animation:sway2 6s ease-in-out infinite}
+@keyframes sway2{50%{transform:rotate(2deg) translateY(-6px)}}
+#bq{transform-origin:50% 100%;animation:sway 5s ease-in-out infinite;filter:drop-shadow(0 14px 18px rgba(110,26,54,.35))}
+@keyframes sway{50%{transform:rotate(1.8deg)}}
+#cake{filter:drop-shadow(0 0 22px rgba(255,190,120,.55))}
+#env{animation:floaty2 4s ease-in-out infinite}
+@keyframes floaty2{50%{transform:translateY(-8px)}}
+#gift{animation:pulse 1.8s ease-in-out infinite;filter:drop-shadow(0 10px 18px rgba(194,55,90,.45))}
+#gift.open{animation:none}
+@keyframes pulse{50%{transform:scale(1.07)}}
+.balloon i{box-shadow:inset -8px -10px 16px rgba(0,0,0,.12),0 10px 22px -8px var(--c)}
+.btn{background:linear-gradient(135deg,#d94a6f,#b02b52)}
+/* setup */
 #hearts{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
 .h{position:absolute;bottom:-30px;color:var(--rose);opacity:.35;animation:rise linear forwards}
 @keyframes rise{to{transform:translateY(-110vh) rotate(25deg);opacity:0}}
@@ -123,7 +151,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:6}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 
-<div id="bg"></div><div id="hearts"></div>
+<div id="bg"></div><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div><canvas id="sp"></canvas><div id="hearts"></div>
 <main id="stage">
 
   <section class="scene on" id="s0" aria-label="Customise">
@@ -263,6 +291,20 @@ setInterval(function(){
   h.style.animationDuration=(7+Math.random()*7)+'s';
   hearts.appendChild(h);setTimeout(function(){h.remove()},15000);
 },900);
+setInterval(function(){
+  var t=document.createElement('span');t.className='pt';t.style.left=Math.random()*100+'%';
+  var z=.7+Math.random()*.8;t.style.transform='scale('+z+')';t.style.animationDuration=(9+Math.random()*7)+'s';
+  hearts.appendChild(t);setTimeout(function(){t.remove()},17000);
+},1800);
+/* twinkling sparkles */
+var sp=$('#sp'),sx=sp.getContext('2d'),stars=[];
+function sizeSp(){sp.width=innerWidth;sp.height=innerHeight;stars=[];for(var i=0;i<46;i++)stars.push({x:Math.random()*sp.width,y:Math.random()*sp.height,r:1+Math.random()*2.2,p:Math.random()*6.3,v:.012+Math.random()*.03})}
+sizeSp();addEventListener('resize',sizeSp);
+(function tw(){sx.clearRect(0,0,sp.width,sp.height);
+  stars.forEach(function(s){s.p+=s.v;var a=.25+.6*Math.abs(Math.sin(s.p));sx.globalAlpha=a;sx.fillStyle='#d9a93f';
+    sx.beginPath();sx.arc(s.x,s.y,s.r,0,6.283);sx.fill();
+    sx.strokeStyle='#d9a93f';sx.lineWidth=.8;sx.beginPath();sx.moveTo(s.x-s.r*3*a,s.y);sx.lineTo(s.x+s.r*3*a,s.y);sx.moveTo(s.x,s.y-s.r*3*a);sx.lineTo(s.x,s.y+s.r*3*a);sx.stroke()});
+  requestAnimationFrame(tw)})();
 
 /* confetti */
 var cv=$('#fx'),cx=cv.getContext('2d'),parts=[],raf=0;
@@ -403,11 +445,15 @@ function openLetter(){
 /* secret code gate */
 $('#lockForm').addEventListener('submit',function(e){
   e.preventDefault();
-  if($('#pw').value.trim()==='2211'){$('#lock').hidden=true;start();var a=$('#bgm');a.volume=.7;a.play().catch(function(){});$('#mute').hidden=false}
+  if($('#pw').value.trim()==='2211'){$('#lock').hidden=true;start();var a=$('#bgm');a.volume=.7;a.load();var pp=a.play();if(pp&&pp.catch)pp.catch(function(){});$('#mute').hidden=false}
   else{$('#lockErr').textContent='That is not the right code. Try again.';var f=$('#lockForm');f.classList.remove('shake');void f.offsetWidth;f.classList.add('shake');$('#pw').select()}
 });
 setTimeout(function(){try{$('#pw').focus()}catch(e){}},200);
 $('#mute').addEventListener('click',function(){var a=$('#bgm');a.muted=!a.muted;this.classList.toggle('off',a.muted);this.setAttribute('aria-label',a.muted?'Turn music on':'Turn music off')});
+/* phones: start the music on the first tap if the code screen's play was blocked */
+['pointerdown','touchend','click','keydown'].forEach(function(ev){document.addEventListener(ev,function(){
+  var a=$('#bgm');if($('#lock').hidden&&a&&a.paused&&!a.muted){var p=a.play();if(p&&p.catch)p.catch(function(){})}
+},{passive:true})});
 /* wiring */
 $('#go').addEventListener('click',start);
 document.querySelectorAll('.next').forEach(function(b){b.addEventListener('click',function(){
