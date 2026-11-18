@@ -191,6 +191,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:6}
 </style>
 
 <style id="night">
+#s0{display:none!important}
 body{background:#0c0820}
 #bg{background:linear-gradient(180deg,#0b0720 0%,#1b1240 45%,#3a2160 80%,#5a2d63 100%);background-size:100% 100%;animation:none}
 .orb.a{background:radial-gradient(circle,#6a4fd366,transparent 65%)}
@@ -534,7 +535,7 @@ var lkTimer=setInterval(pourHeart,170);
 /* secret code gate */
 $('#lockForm').addEventListener('submit',function(e){
   e.preventDefault();
-  if($('#pw').value.trim()==='2211'){$('#lock').hidden=true;clearInterval(lkTimer);start();var a=$('#bgm');a.volume=.7;a.load();var pp=a.play();if(pp&&pp.catch)pp.catch(function(){});$('#mute').hidden=false}
+  if($('#pw').value.trim()==='2211'){clearInterval(lkTimer);start();var Lk=$('#lock');Lk.style.transition='opacity .7s ease';Lk.style.opacity='0';Lk.style.pointerEvents='none';setTimeout(function(){Lk.hidden=true},760);var a=$('#bgm');a.volume=.7;a.load();var pp=a.play();if(pp&&pp.catch)pp.catch(function(){});$('#mute').hidden=false}
   else{$('#lockErr').textContent='That is not the right code. Try again.';var f=$('#lockForm');f.classList.remove('shake');void f.offsetWidth;f.classList.add('shake');$('#pw').select()}
 });
 setTimeout(function(){try{$('#pw').focus()}catch(e){}},200);
