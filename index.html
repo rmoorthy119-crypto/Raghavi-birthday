@@ -228,6 +228,14 @@ h1{background:none;color:#fff1dc;text-shadow:0 2px 22px rgba(255,214,150,.5)}
 #skyline{position:fixed;bottom:0;left:50%;width:max(100%,780px);height:auto;transform:translateX(-50%);z-index:1;pointer-events:none}
 .balloon{width:100px;height:124px}.balloon i{inset:0 0 18px}.balloon::after{height:20px}
 .scene{scrollbar-width:none;-ms-overflow-style:none}.scene::-webkit-scrollbar{display:none;width:0;height:0}
+#letter>p{animation:none!important}
+#letter .w{display:inline-block;opacity:0;transform:translateY(10px);filter:blur(5px)}
+#letter.go .w{animation:wIn .7s cubic-bezier(.2,.8,.2,1) var(--d,0s) forwards}
+#letter.fast .w{animation:none!important;opacity:1;transform:none;filter:none}
+@keyframes wIn{to{opacity:1;transform:none;filter:none}}
+#letter .polaroid{width:132px!important;padding:7px 7px 20px}
+#letter .polaroid img{aspect-ratio:1/1;max-height:none;object-fit:cover;object-position:50% 22%}
+@keyframes up{from{opacity:0;transform:translateY(-22px) scale(.97)}}
 </style>
 <div id="bg"></div><div id="bgmoon"></div><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div><canvas id="sp"></canvas><div id="hearts"></div>
 <main id="stage">
@@ -456,7 +464,7 @@ function start(){
   var L=$('#letter');L.hidden=true;
   putStack($('#ph1'),photos.stack);$('#art1').style.display=photos.stack.length?'none':'';
   putPhoto($('#ph2'),photos.fP2);
-  L.innerHTML=(photos.fP3?'<div class="polaroid"><img alt="" src="'+photos.fP3+'"></div>':'')+'<p class="dear">Dear '+esc(cfg.name)+',</p>'+cfg.letter.map(function(p){return '<p>'+esc(p)+'</p>'}).join('')+'<p class="sig">With love,<br>'+esc(cfg.from)+'</p>';
+  L.innerHTML=(photos.fP3?'<div class="polaroid"><img alt="" src="'+photos.fP3+'"></div>':'')+'<p class="dear">'+wrapW('Dear '+esc(cfg.name)+',')+'</p>'+cfg.letter.map(function(p){return '<p>'+wrapW(esc(p))+'</p>'}).join('')+'<p class="sig">'+wrapW('With love,')+'<br>'+wrapW(esc(cfg.from))+'</p>';
   $('#n5').style.display='none';
   /* gift */
   $('#pre').style.display='flex';$('#fin').style.display='none';$('#gift').classList.remove('open');
@@ -542,9 +550,15 @@ function bqPhoto(){var s=$('#bq');s.setAttribute('viewBox','0 0 459 677');var h=
   [[22,70],[240,78],[130,22],[12,150],[250,160],[70,30],[192,28]].forEach(function(p,i){h+='<path class="tw" style="animation-delay:'+(i*.35)+'s" d="M'+p[0]+' '+(p[1]-6)+'L'+(p[0]+1.8)+' '+(p[1]-1.8)+'L'+(p[0]+6)+' '+p[1]+'L'+(p[0]+1.8)+' '+(p[1]+1.8)+'L'+p[0]+' '+(p[1]+6)+'L'+(p[0]-1.8)+' '+(p[1]+1.8)+'L'+(p[0]-6)+' '+p[1]+'L'+(p[0]-1.8)+' '+(p[1]-1.8)+'Z" fill="#f4c542"/>'});
   s.innerHTML=h;
 }
+function wrapW(t){return t.split(' ').map(function(w){return '<span class="w">'+w+'</span>'}).join(' ')}
+function revealLetter(){var L=$('#letter');L.classList.remove('go');L.scrollTop=0;var ws=L.querySelectorAll('.w'),d=.5,tot=0;
+  ws.forEach(function(w,i){var last=/[.,!?]$/.test(w.textContent);w.style.setProperty('--d',d.toFixed(2)+'s');d+=last?.3:.12;
+    if(i%7===0)(function(w,t){later(function(){if(w.offsetTop>L.scrollTop+L.clientHeight*.72)L.scrollTo({top:Math.max(0,w.offsetTop-L.clientHeight*.5),behavior:'smooth'})},t)})(w,d*1000)});
+  L.classList.remove('fast');void L.offsetWidth;L.classList.add('go');return d}
+var __lt=document.getElementById('letter');__lt.addEventListener('click',function(){__lt.classList.add('fast');$('#n5').style.display=''});
 function openLetter(){
   $('#env').classList.add('open');$('#h5').style.display='none';$('#t5').style.display='none';
-  later(function(){$('#env').style.display='none';$('#letter').hidden=false;$('#n5').style.display='';},900);
+  later(function(){$('#env').style.display='none';$('#letter').hidden=false;var dd=revealLetter();later(function(){$('#n5').style.display='';$('#letter').scrollTo({top:99999,behavior:'smooth'})},dd*1000+600);},900);
 }
 
 /* moon lock screen: stars and pouring hearts */
