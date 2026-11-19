@@ -228,13 +228,14 @@ h1{background:none;color:#fff1dc;text-shadow:0 2px 22px rgba(255,214,150,.5)}
 #skyline{position:fixed;bottom:0;left:50%;width:max(100%,780px);height:auto;transform:translateX(-50%);z-index:1;pointer-events:none}
 .balloon{width:100px;height:124px}.balloon i{inset:0 0 18px}.balloon::after{height:20px}
 .scene{scrollbar-width:none;-ms-overflow-style:none}.scene::-webkit-scrollbar{display:none;width:0;height:0}
+#letter{position:relative}
 #letter>p{animation:none!important}
 #letter .w{display:inline-block;opacity:0;transform:translateY(10px);filter:blur(5px)}
 #letter.go .w{animation:wIn .7s cubic-bezier(.2,.8,.2,1) var(--d,0s) forwards}
 #letter.fast .w{animation:none!important;opacity:1;transform:none;filter:none}
 @keyframes wIn{to{opacity:1;transform:none;filter:none}}
-#letter .polaroid{width:132px!important;padding:7px 7px 20px}
-#letter .polaroid img{aspect-ratio:1/1;max-height:none;object-fit:cover;object-position:50% 22%}
+#letter .polaroid{width:224px!important;padding:9px 9px 26px}
+#letter .polaroid img{aspect-ratio:4/5;max-height:none;object-fit:cover;object-position:50% 0%}
 @keyframes up{from{opacity:0;transform:translateY(-22px) scale(.97)}}
 </style>
 <div id="bg"></div><div id="bgmoon"></div><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div><canvas id="sp"></canvas><div id="hearts"></div>
@@ -553,7 +554,7 @@ function bqPhoto(){var s=$('#bq');s.setAttribute('viewBox','0 0 459 677');var h=
 function wrapW(t){return t.split(' ').map(function(w){return '<span class="w">'+w+'</span>'}).join(' ')}
 function revealLetter(){var L=$('#letter');L.classList.remove('go');L.scrollTop=0;var ws=L.querySelectorAll('.w'),d=.5,tot=0;
   ws.forEach(function(w,i){var last=/[.,!?]$/.test(w.textContent);w.style.setProperty('--d',d.toFixed(2)+'s');d+=last?.3:.12;
-    if(i%7===0)(function(w,t){later(function(){if(w.offsetTop>L.scrollTop+L.clientHeight*.72)L.scrollTo({top:Math.max(0,w.offsetTop-L.clientHeight*.5),behavior:'smooth'})},t)})(w,d*1000)});
+    if(i%7===0)(function(w,t){later(function(){if(w.offsetTop>L.scrollTop+L.clientHeight*.88)L.scrollTo({top:Math.max(0,w.offsetTop-L.clientHeight*.6),behavior:'smooth'})},t)})(w,d*1000)});
   L.classList.remove('fast');void L.offsetWidth;L.classList.add('go');return d}
 var __lt=document.getElementById('letter');__lt.addEventListener('click',function(){__lt.classList.add('fast');$('#n5').style.display=''});
 function openLetter(){
